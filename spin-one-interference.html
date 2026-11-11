@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin-1 interference: fixed examples</title>
+    <link rel="stylesheet" href="/src/shared/style.css" />
+    <link rel="stylesheet" href="/src/spin-one-interference/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>Spin-1 zero state: where interference enters</h1>
+      <a href="index.html">All pages</a>
+      <a href="spin-one-pair.html">Two-star explorer</a>
+    </header>
+    <main class="examples-page">
+      <section class="panel introduction">
+        <h2>One fixed state, three measurement directions</h2>
+        <p>The state is <strong>(|z+ z−⟩ + |z− z+⟩)/√2</strong>, or spin-1 |0⟩ along z.
+          Its Majorana stars stay at +z and −z in every example.</p>
+        <p><span class="gold">Gold = first ordering (ab)</span>;
+          <span class="purple">purple = exchanged ordering (ba)</span>;
+          white = their summed amplitude. Contributions below already include the 1/√2 normalization.</p>
+        <p>The faint wire spheres show the proposed mirrored anti-states: each lies exactly on the other star's state sphere.
+          This overlap is identical in all three views. It is <strong>not</strong> used to calculate interference.</p>
+        <p class="hint">Drag each 3D view to orbit; scroll or pinch to zoom. The state and measurement directions stay fixed.</p>
+        <p class="hint">The separate ab and ba diagrams color the measurement patches in each labeled slot.
+          Product squares connect those patches to the amplitude arrows; they do not represent literal sphere overlap.
+          Red patches encode +|+n⟩, magenta +|−n⟩, and purple −|−n⟩ in the chosen phase convention.
+          Gold and pale-purple arrows still label the two orderings.
+          Detailed area calculations are preserved in expandable sections beneath each pair of views.</p>
+      </section>
+      <div id="examples" class="examples"></div>
+      <section class="panel conclusion">
+        <h2>What the comparison shows</h2>
+        <p>Geometric overlap stays fixed, but changing the measurement frame changes the signs and lengths of the amplitude contributions.
+          Add those contributions first, then square the result.</p>
+        <p>The projection diagrams summarize this particular state:
+          the longitudinal component cos θ gives P(0) = cos² θ;
+          the transverse component sin θ gives P(+1) = P(−1) = sin² θ/2.
+          They illustrate exact amplitude relations, not surface-area measurement regions.</p>
+        <p class="hint">The ++ and −− rows each correspond to one spin-1 outcome.
+          The two mixed rows are orthogonal labeled-qubit outcomes: their probabilities add to P(0), not their amplitudes.
+          Each row separately adds the ab and ba amplitudes coherently.
+          The individual stars are state ingredients, not two independently measurable particles with fixed star marginals.</p>
+      </section>
+    </main>
+    <script type="module" src="/src/spin-one-interference/main.ts"></script>
+  </body>
+</html>

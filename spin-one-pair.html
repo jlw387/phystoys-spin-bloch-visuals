@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin-1 Two-Star Explorer</title>
+    <link rel="stylesheet" href="/src/shared/style.css" />
+    <style>
+      .pair-layout { display: grid; grid-template-columns: repeat(2, minmax(320px, 1fr)); gap: 1rem; padding: 1rem; max-width: 1500px; margin: auto; align-items: start; }
+      .star-view { width: 100%; aspect-ratio: 1; min-height: 340px; }
+      .star-view canvas { display: block; }
+      .pair-phasors { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+      .pair-phasors figure { margin: 0; text-align: center; }
+      .amplitude-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; max-width: 720px; margin: 1rem auto; }
+      .amplitude-tile { border: 2px solid; border-radius: 6px; padding: 0.6rem; min-width: 0; }
+      .amplitude-tile canvas { display: block; width: 100%; }
+      .combined-area { display: flex; height: 110px; background: #0e1117; margin: 1rem 0; }
+      .combined-area > span { display: flex; align-items: center; justify-content: center; color: #080b10; overflow: hidden; min-width: 0; }
+      @media (max-width: 760px) { .pair-layout { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <header class="topbar"><a href="index.html">&larr; All spins</a><h1>Spin-1: two Majorana stars</h1><button id="toggle-all" type="button">Collapse all</button></header>
+    <main class="pair-layout">
+      <div class="column">
+        <details class="panel" open>
+          <summary>Input state |ψ⟩ = (a, b, c)</summary>
+          <label>a (m = +1) <input id="amp-a" value="1" spellcheck="false" autocomplete="off" /></label><div class="error" id="err-a"></div>
+          <label>b (m = 0) <input id="amp-b" value="0" spellcheck="false" autocomplete="off" /></label><div class="error" id="err-b"></div>
+          <label>c (m = −1) <input id="amp-c" value="0" spellcheck="false" autocomplete="off" /></label><div class="error" id="err-c"></div>
+          <div class="presets" id="presets"></div>
+          <p class="hint">Three complex amplitudes in the z basis. Expressions such as sqrt(2), i and (1+i)/sqrt(2) are supported.</p>
+        </details>
+        <details class="panel" open>
+          <summary>Components: Argand plots</summary>
+          <div class="pair-phasors">
+            <figure><canvas id="phasor-a" width="220" height="220" aria-label="Argand plot of a"></canvas><figcaption>a</figcaption></figure>
+            <figure><canvas id="phasor-b" width="220" height="220" aria-label="Argand plot of b"></canvas><figcaption>b</figcaption></figure>
+            <figure><canvas id="phasor-c" width="220" height="220" aria-label="Argand plot of c"></canvas><figcaption>c</figcaption></figure>
+          </div>
+          <p class="hint">Click or drag to edit. Gold dashed arrow = raw input; blue solid arrow = normalized component; dotted circle = unit magnitude.</p>
+        </details>
+        <details class="panel" open><summary>Normalized state</summary><div id="norm-out" class="readout"></div></details>
+        <details class="panel" open>
+          <summary>Expectation values and uncertainties</summary>
+          <table id="exp-table" class="readout"><thead><tr><th>Operator</th><th>⟨S⟩ (ħ)</th><th>ΔS (ħ)</th></tr></thead><tbody></tbody></table><div id="exp-len" class="readout"></div>
+        </details>
+      </div>
+      <div class="column">
+        <details class="panel" open>
+          <summary>State directions and Majorana stars</summary>
+          <div id="bloch"></div>
+          <div class="presets" id="field-presets"></div>
+          <label class="inline"><input id="fixed-scale" type="checkbox" checked /> Fixed colour scale 0–1</label>
+          <label class="inline"><input id="inflate" type="checkbox" /> Inflate probability field</label>
+          <div id="field-scale" class="readout"></div>
+          <p class="hint">Orange dots mark the two Majorana directions; they coincide for coherent states. White arrow = ⟨S⟩. The coloured sphere shows measurement probabilities, not the full four-real-dimensional pure-state space. Stars are an unordered pair, not two physical particles.</p>
+        </details>
+        <details class="panel" open>
+          <summary>Shared measurement axis</summary>
+          <div id="axis-presets" class="presets"></div>
+          <label>θ <input id="axis-theta" type="range" min="0" max="180" step="1" value="0" /><output id="axis-theta-out">0°</output></label>
+          <label>φ <input id="axis-phi" type="range" min="0" max="360" step="1" value="0" /><output id="axis-phi-out">0°</output></label>
+          <div id="prob-bars"></div>
+          <p class="hint">One shared axis drives the exact probability bars, both spin-½ surfaces, the combined amplitude/area display and the comparison table. Principal-axis colours blend smoothly for custom directions.</p>
+        </details>
+      </div>
+      <details class="panel" open>
+        <summary>Star A: individual spin-½ sphere</summary>
+        <div id="star-a" class="star-view"></div>
+        <div id="star-a-readout" class="readout"></div>
+        <details class="subpanel"><summary>Sphere appearance</summary><div id="star-a-appearance" class="appearance"></div></details>
+        <p class="hint">Sphere radius ½, centered at a/2. Curved areas use the selected axis's +/− colours. A plane through the origin perpendicular to that axis separates them. Orbit independently.</p>
+      </details>
+      <details class="panel" open>
+        <summary>Star B: individual spin-½ sphere</summary>
+        <div id="star-b" class="star-view"></div>
+        <div id="star-b-readout" class="readout"></div>
+        <details class="subpanel"><summary>Sphere appearance</summary><div id="star-b-appearance" class="appearance"></div></details>
+        <p class="hint">Same construction for the second Majorana direction. Star labels may exchange as the state changes; physical predictions are unchanged.</p>
+      </details>
+      <details class="panel" open style="grid-column:1/-1">
+        <summary>Spatial sphere overlap (exploratory)</summary>
+        <div class="presets" id="overlap-presets"></div>
+        <label>Explore star separation <input id="overlap-separation" type="range" min="0" max="180" step="1" value="0" /><output id="overlap-separation-out">0°</output></label>
+        <p class="hint">Moving this slider prepares one star at +z and the other tilted toward +x. Presets update the three complex inputs; all views follow the same state.</p>
+        <div class="overlap-figures">
+          <div id="overlap-view" class="star-view"></div>
+          <figure class="overlap-section">
+            <div id="overlap-section"></div>
+            <figcaption class="hint">Flat slice through the plane containing both stars. Mint = lens. White chord = the rim disk seen edge-on: it runs from the origin to the midpoint between the two star tips.</figcaption>
+          </figure>
+        </div>
+        <label class="inline"><input id="overlap-isolate" type="checkbox" /> Hide outer sphere surfaces to isolate the intersection</label>
+        <label class="inline"><input id="overlap-rim" type="checkbox" checked /> Show the rim disk (white)</label>
+        <div id="overlap-readout" class="readout" role="status"></div>
+        <ul class="hint overlap-terms">
+          <li><strong>Lens:</strong> the solid region inside both spheres (mint).</li>
+          <li><strong>Lens volume:</strong> the volume of that solid region, divided by one sphere's volume.</li>
+          <li><strong>Lens surface area:</strong> the area of the lens's curved boundary (both mint caps), divided by one sphere's surface area.</li>
+          <li><strong>Rim disk:</strong> the flat disk spanned by the circle where the two sphere surfaces cross (white). Its area divided by a sphere's central cross-section equals the quantum overlap |⟨a|b⟩|² exactly. The rim circle always passes through the origin, and its diameter (dashed) runs from the origin to the midpoint between the star tips.</li>
+        </ul>
+        <p class="hint">Gold/purple spheres have radius ½ and centers at half their Majorana directions. Mint highlights the boundary of their shared interior (the lens), including the spherical patches inside the other ball. Opposite stars give spheres touching only at the origin; coincident stars give complete overlap. Colours identify the stars, not measurement outcomes.</p>
+        <p class="hint">The intersection volume, shared surface patches and quantum overlap are different quantities, displayed separately. This spatial overlay is for exploration and is not used to calculate measurement probabilities. Changing the measurement axis does not change it.</p>
+      </details>
+      <details class="panel" open style="grid-column:1/-1">
+        <summary>Probabilities as distance products</summary>
+        <label>Explore star separation <input id="distance-separation" type="range" min="0" max="180" step="1" value="0" /><output id="distance-separation-out">0°</output></label>
+        <p class="hint">Same control as in the sphere-overlap panel: one star at +z, the other tilted toward +x. The measurement axis is still set at the top of the page.</p>
+        <div class="overlap-figures">
+          <div>
+            <div id="distance-view" class="star-view"></div>
+            <p class="hint">Drag to orbit; scroll to zoom. Faint gold/purple spheres and solid star radii provide context.
+              Dashed gold/purple guides project the star tips onto A and B.
+              The white circle, centred at m with radius H, lies in the plane of the axis and m and passes through A and B; coloured lines are the tangents from the poles.
+              White dashes show m; orange dashes show its perpendicular component.
+              Mint d = (a − b)/2 joins the purple sphere center to the gold sphere center; its signed axial projection dₙ runs from m's foot to A.</p>
+          </div>
+          <figure class="overlap-section"><div id="distance-diagram"></div></figure>
+        </div>
+        <div style="overflow-x:auto">
+          <table id="distance-table" class="readout"></table>
+        </div>
+        <div id="distance-equations" class="readout"></div>
+        <p class="hint">How the probabilities arise: draw the circle centred at m through the projected tips <span style="color:#ffb347">A</span> and <span style="color:#ce85ff">B</span> (its radius is the gray length H).
+          The measurement axis cuts this circle at A and B, so by the power-of-a-point theorem the square on the tangent from −n has area |−n A| × |−n B| — the +1 numerator; the tangent from +n gives −1.
+          Each pole, its tangent point and m form a right triangle, so the square on the segment from m to the pole splits into a tangent square (±1) and a radius square H² (one mixed ordering).
+          The two radius squares together give 0. The four leg squares add up to |m + n|² + |m − n|² = 2(1 + |m|²), whatever the axis; each probability is its share of that total.</p>
+        <p class="hint">The 2D drawing lies in the plane containing the measurement axis and m, so every length is drawn true to scale (unlike the perspective view).
+          Dotted lines join m to the poles (the right triangles' hypotenuses). The orange dashed leg is |m⊥| and the mint bar is |dₙ|, so H² = |m⊥|² + dₙ².
+          The full d generally lies outside this plane and is shown in 3D.
+          P(0) vanishes exactly when the circle collapses to a point (A = B at m's foot); P(±1) vanishes when the opposite pole lies on the circle.
+          At coincident stars, m is a limiting rim point; at opposite stars it is the origin.
+          This is an exact rewriting of the Born-rule probabilities, not a region-cutting model: the circle's radius changes with the measurement axis, only the total stays fixed.</p>
+      </details>
+      <details class="panel" open style="grid-column:1/-1">
+        <summary>Combined amplitudes and probability areas</summary>
+        <p class="hint">Uses the shared measurement axis above. Colours: z blue/cyan, y green/yellow, x red/magenta; custom directions blend these RGB colours using weights nₓ², nᵧ², n_z². Zero stays gray. Opposite axes have the same palette; their outcome probabilities exchange. Colours identify the axis, not quantum phases.</p>
+        <p>Each tile is one ordered pair outcome. Add the contributions from |ab⟩ and |ba⟩ as complex arrows, then square the resultant magnitude. Both contributions include the common normalization 1/√(2(1 + |⟨a|b⟩|²)).</p>
+        <p class="hint">Gold arrow: |ab⟩ contribution from the origin. Purple arrow: |ba⟩ contribution starting at the gold arrow's tip. White arrow: their sum from the origin. All tiles share one scale and use Re horizontally, Im vertically. The spinor phase convention fixes the arrows' appearance; probabilities do not depend on that convention.</p>
+        <div id="amplitude-tiles" class="amplitude-tiles"></div>
+        <h2>Combined probability area</h2>
+        <div id="combined-area" class="combined-area" role="img" aria-label="Combined probability area"></div>
+        <div id="combined-legend" class="readout"></div>
+        <p class="hint">Each coloured area is proportional to the symmetrized outcome probability. Gray combines the two mixed-sign tiles. This rectangle is a probability diagram, not a discovered state shape cut by fixed measurement surfaces.</p>
+        <h2>Comparison for the unrestricted top measurement axis</h2>
+        <div id="pair-status" class="readout" role="status"></div>
+        <table id="pair-table" class="readout"><thead><tr><th>Outcome</th><th>Independent pair</th><th>Symmetrized pair</th><th>Exact spin-1</th><th>Independent − exact</th></tr></thead><tbody></tbody></table>
+        <p class="hint">Coincident stars: independent and symmetrized results agree. Separated stars: interference generally changes the probabilities. Try m=0 (z), then measure x to see the cancellation of the zero outcome. Individual mesh-area ratios are approximations; this table uses analytic probabilities.</p>
+      </details>
+    </main>
+    <script type="module" src="/src/spin-one-pair/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin-1 Geometry Experiment</title>
+    <link rel="stylesheet" href="/src/shared/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a href="index.html">&larr; All spins</a>
+      <h1>Spin-1 geometry experiment (temporary)</h1>
+      <button id="toggle-all" type="button">Collapse all</button>
+    </header>
+    <div class="layout">
+      <div class="column">
+        <details class="panel" open>
+          <summary>Input state |ψ⟩ = (a, b, c)</summary>
+          <label>a (m = +1) <input id="amp-a" value="1" spellcheck="false" autocomplete="off" /></label><div class="error" id="err-a"></div>
+          <label>b (m = 0) <input id="amp-b" value="0" spellcheck="false" autocomplete="off" /></label><div class="error" id="err-b"></div>
+          <label>c (m = −1) <input id="amp-c" value="0" spellcheck="false" autocomplete="off" /></label><div class="error" id="err-c"></div>
+          <p class="hint">Amplitudes of the S<sub>z</sub> eigenstates. The original spin-1 calculations remain available below.</p>
+          <div class="presets" id="presets"></div>
+        </details>
+        <details class="panel" open>
+          <summary>Normalized state</summary>
+          <div id="norm-out" class="readout"></div>
+        </details>
+        <details class="panel" open>
+          <summary>Expectation values and uncertainties</summary>
+          <table class="readout" id="exp-table"><thead><tr><th>Operator</th><th>⟨S⟩ (ħ)</th><th>ΔS (ħ)</th></tr></thead><tbody></tbody></table>
+          <div class="readout" id="exp-len"></div>
+          <p class="hint">Unlike spin-½, the expectation arrow alone does not determine the state.</p>
+        </details>
+        <details class="panel" open>
+          <summary>Prepare a geometric state</summary>
+          <p class="hint">These controls prepare an eigenstate of the previous measurement axis. The new measurement uses the separate θ/φ controls. Preparing a state also updates the complex inputs. Rotated ±1 and 0 eigenstates entered through presets or complex inputs automatically orient the geometric shape and these controls. General superpositions do not yet have a geometric shape.</p>
+          <label>Previous axis θ <input type="range" id="prep-theta" min="0" max="180" step="any" value="0" /><output id="prep-theta-out">0°</output></label>
+          <label>Previous axis φ <input type="range" id="prep-phi" min="0" max="360" step="any" value="0" /><output id="prep-phi-out">0°</output></label>
+          <div class="presets" id="prepare-buttons"></div>
+          <p class="hint">±1: sphere of radius ½ centered at ±s/2, counting uniform curved area. 0: a disk centered at the origin perpendicular to s (uniform area), or its circular rim (uniform length).</p>
+          <label>0 shape <select id="zero-shape"><option value="disk">Filled disk (area)</option><option value="ring">Circular rim (length)</option></select></label>
+          <label>0 radius <input type="range" id="zero-radius" min="0.1" max="1" step="0.05" value="0.5" /><output id="zero-radius-out">0.5</output></label>
+        </details>
+      </div>
+      <div class="column">
+        <details class="panel" open>
+          <summary>New measurement axis</summary>
+          <div class="presets" id="axis-presets"></div>
+          <label>θ <input type="range" id="axis-theta" min="0" max="180" step="1" value="0" /><output id="axis-theta-out">0°</output></label>
+          <label>φ <input type="range" id="axis-phi" min="0" max="360" step="1" value="0" /><output id="axis-phi-out">0°</output></label>
+          <div id="prob-bars"></div>
+          <p class="hint">Exact quantum probabilities for the input state. White dashed line = new measurement axis; orange line = previous preparation axis.</p>
+        </details>
+        <details class="panel" open>
+          <summary>Measurement boundaries</summary>
+          <label>Boundary shape <select id="boundary-type">
+            <option value="paraboloid">Paraboloids: k(x′² + y′²)</option>
+            <option value="cross">Parabolic cross: k min(x′², y′²)</option>
+            <option value="smooth-cross">Smooth cross: k x′²y′²/(x′² + y′²)</option>
+          </select></label>
+          <label>Curvature k <input type="range" id="curvature" min="0.05" max="4" step="any" value="0.5" /><output id="curvature-out">0.5</output></label>
+          <label>Type curvature k <input id="curvature-input" value="0.5" spellcheck="false" autocomplete="off" aria-describedby="curvature-error curvature-help" /></label>
+          <div class="error" id="curvature-error" role="status"></div>
+          <p class="hint" id="curvature-help">Enter a finite real value of at least 0.05, or an expression such as <code>sqrt(2)/2</code>. Values above 4 expand the slider range. The geometry uses the full evaluated precision; very steep boundaries can exceed the mesh or sampling resolution.</p>
+          <label class="inline"><input type="checkbox" id="show-paraboloids" checked /> Show boundary surfaces</label>
+          <p class="hint">u = r·n. The selected formula gives height h in the transverse coordinates x′, y′. Blue (+1): u &gt; h. Red (−1): u &lt; −h. Green (0): between them. Boundary ties count as 0. Surfaces are clipped to the unit ball.</p>
+          <p class="hint">The cross follows laboratory x/y rotated by the shortest rotation from z to the measurement axis (a fixed convention at −z). It never follows the state. For a z measurement its valleys lie on x and y; try 0(x), then prepare 0 with previous axis θ=90°, φ=45° to see the off-angle mismatch. The smooth-cross height is defined as zero at the origin.</p>
+          <p class="error">Exploratory model, not an exact spin-1 construction. Agreement must be checked, not assumed.</p>
+          <p class="hint"><a href="paraboloid-sweep.html">Explore the allowed region under all horizontal paraboloid measurements</a> (separate visual).</p>
+        </details>
+      </div>
+      <div class="column">
+        <details class="panel" open>
+          <summary>Geometric surface experiment</summary>
+          <div id="experiment-view" style="width:100%;aspect-ratio:1;min-height:340px"></div>
+          <div id="geometry-status" class="hint" role="status"></div>
+          <table class="readout" id="comparison"><thead><tr><th>m</th><th>Geometry</th><th>Quantum</th><th>Difference</th></tr></thead><tbody></tbody></table>
+          <p class="hint">20,000 equal-weight surface samples, coloured by their measurement region: blue +1, green 0, red −1. Fractions are numerical area estimates (length for the rim), not exact integrals; thin regions can be missed. No cut faces or enclosed volumes are counted. Hide the boundaries for an unobstructed view.</p>
+        </details>
+        <details class="panel bloch" open>
+          <summary>Husimi surface / sphere of directions</summary>
+          <label class="inline"><input type="checkbox" id="husimi-amplitude" checked /> Amplitude surface: r = √P(selected outcome|n)</label>
+          <div id="bloch"></div>
+          <div class="presets"><button type="button" id="husimi-intermediate">Intermediate stars (+z, +x)</button></div>
+          <div class="presets" id="field-presets"></div>
+          <label class="inline"><input type="checkbox" id="fixed-scale" checked /> Fixed colour scale 0–1</label>
+          <label class="inline"><input type="checkbox" id="inflate" /> Inflate surface by value (when amplitude surface is off)</label>
+          <div class="readout" id="field-scale"></div>
+          <p class="hint">This is the original exact quantum probability field, not the experimental geometry. Orange dots = Majorana stars; white arrow = ⟨S⟩. Drag either view to orbit independently.</p>
+          <p class="hint">The outcome buttons work in every view. With the amplitude surface enabled, radius squared equals the selected outcome's probability, with no minimum radius or maximum-based rescaling. P(+1|n) is the Husimi Q surface: try m=+1 (z) for the revolved cardioid, m=0 (z) for the pinched torus, or Intermediate stars. Selecting P(0|n) or P(−1|n) shows that outcome's amplitude surface instead. Turn amplitude off to use the original sphere/inflate controls. This is a radial probability readout, not an area-fraction model. Orange stars remain on the unit sphere of directions, not on the deformed surface.</p>
+        </details>
+      </div>
+    </div>
+    <script type="module" src="/src/spin-one-experiment/main.ts"></script>
+  </body>
+</html>

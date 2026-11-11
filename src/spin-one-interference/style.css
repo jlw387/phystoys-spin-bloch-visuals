@@ -1,0 +1,26 @@
+.examples-page { max-width: 1500px; margin: auto; padding: 1rem; }
+.examples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0; }
+.examples h2 { color: var(--text); text-transform: none; font-size: 1.1rem; }
+.examples h3 { font-size: 0.95rem; margin: 1rem 0 0.3rem; }
+.sphere-example { width: 100%; aspect-ratio: 1; }
+.sphere-example canvas { display: block; width: 100%; height: 100%; }
+.gold { color: #ffb347; }
+.purple { color: #ce85ff; }
+.examples svg { display: block; width: 100%; height: auto; background: #141820; border-radius: 6px; }
+.examples svg text { fill: #e6e9ef; font: 12px system-ui, sans-serif; }
+.amplitude-equation { font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; margin: 0.15rem 0 0.7rem; }
+.result { display: flex; height: 32px; overflow: hidden; border-radius: 4px; background: #0e1117; }
+.result span { display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #10141b; font-weight: 600; }
+.probabilities { font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem; }
+.topbar { flex-wrap: wrap; }
+.ordering { border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem; margin: 0.8rem 0; }
+.ordering h4 { margin: 0; font-size: 0.9rem; }
+.ordering-scene { width: 100%; aspect-ratio: 1.3; }
+.ordering-scene canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.ordering-row { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 0.5rem; margin-top: 0.8rem; align-items: center; }
+.ordering-row .amplitude-equation { overflow-wrap: anywhere; margin-bottom: 0; }
+.ordering-comparison .ordering { margin: 0; }
+.ordering-comparison { display: grid; gap: 0.4rem; }
+.ordering-comparison .ordering-scene { aspect-ratio: 1.6; }
+.examples details > summary { cursor: pointer; color: var(--muted); padding: 0.6rem 0; }
+@media (max-width: 1000px) { .examples { grid-template-columns: 1fr; max-width: 600px; margin: 1rem auto; } }

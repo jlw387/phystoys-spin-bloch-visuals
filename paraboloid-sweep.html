@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rotating Paraboloid Exclusions</title>
+    <link rel="stylesheet" href="/src/shared/style.css" />
+    <style>
+      .sweep-layout { display: grid; grid-template-columns: minmax(280px, 360px) minmax(320px, 1fr); gap: 1rem; padding: 1rem; max-width: 1300px; margin: auto; }
+      #sweep-view { width: 100%; aspect-ratio: 1; min-height: 340px; }
+      #sweep-view canvas { display: block; }
+      #slice { width: 100%; display: block; }
+      @media (max-width: 800px) { .sweep-layout { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <header class="topbar"><a href="spin-one-experiment.html">&larr; Geometry experiment</a><h1>Rotating paraboloid exclusions</h1></header>
+    <main class="sweep-layout">
+      <div class="column">
+        <section class="panel">
+          <h2>Allowed region for 0 along z</h2>
+          <p>Curvature k = √2/2. Let B(n) be the <strong>middle region outside both outcome paraboloids</strong>:</p>
+          <p class="readout">|r·n| ≤ k (|r|² − (r·n)²).</p>
+          <p>The state must stay in B(z), but avoid B(n) for <strong>every</strong> horizontal measurement axis.</p>
+          <label>Directions excluded <select id="sweep-count">
+            <option value="1">x only</option>
+            <option value="2" selected>x and y</option>
+            <option value="4">4 equally spaced axes</option>
+            <option value="8">8 equally spaced axes</option>
+            <option value="32">32 equally spaced axes</option>
+            <option value="all">ALL horizontal axes (exact)</option>
+          </select></label>
+          <label class="inline"><input id="survivors-only" type="checkbox" /> Show only surviving points</label>
+          <label class="inline"><input id="whole-ball" type="checkbox" /> Show the sweep in the whole unit ball (not just B(z))</label>
+          <p><span class="dot" style="background:#5c8dff"></span>Blue points: still allowed.<br /><span class="dot" style="background:#ff5c5c"></span>Red points: excluded by at least one selected horizontal middle region.</p>
+          <p id="sweep-status" class="readout" role="status"></p>
+          <p class="hint">The 3D point grid is illustrative, not a proof or a surface-area probability calculation. A finite set can miss small surviving regions. ALL uses the exact analytic union.</p>
+        </section>
+        <section class="panel">
+          <h2>Inspect one rotating boundary</h2>
+          <label>Horizontal axis angle <input id="sweep-angle" type="range" min="0" max="180" value="0" /><output id="sweep-angle-out">0°</output></label>
+          <label class="inline"><input id="sweep-boundary" type="checkbox" checked /> Show this pair of paraboloid surfaces</label>
+          <p class="hint">White dashed line = inspected horizontal measurement axis. Orange line = z preparation axis. Transparent blue/red surfaces bound this one middle region; their colours do not classify points. This angle control only inspects the sweep; the selected exclusion set above determines the point colours.</p>
+        </section>
+        <section class="panel">
+          <h2>Equatorial slice: z = 0</h2>
+          <canvas id="slice" width="360" height="360" aria-label="Equatorial slice showing allowed blue and excluded red regions"></canvas>
+          <p class="hint">x is right, y is up. Black is outside the unit ball (or hidden excluded points). Every equatorial point satisfies the z middle-region constraint.</p>
+        </section>
+      </div>
+      <div class="column">
+        <section class="panel">
+          <h2>3D region (drag to orbit)</h2>
+          <div id="sweep-view"></div>
+        </section>
+        <section class="panel">
+          <h2>The full rotation leaves no allowed region</h2>
+          <p>For any point r = (x,y,z), choose a horizontal unit axis n perpendicular to (x,y). Then r·n = 0, so r belongs to B(n).</p>
+          <p class="readout">Union over horizontal n of B(n) = all of space.<br />B(z) \ Union B(n) = empty.</p>
+          <p>Thus the swept <em>middle region</em> fills the entire unit ball shown here, and all of space without the display cutoff. There is no point that stays in an outcome paraboloid for <strong>every</strong> horizontal axis. Being in one for <em>some</em> axis is a weaker condition and is not sufficient.</p>
+          <p class="hint">The origin is assigned to outcome 0 for every axis. This conclusion is specific to these fixed paraboloid regions with k &gt; 0, not a no-go result for every possible geometric model.</p>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="/src/spin-one-experiment/sweep-main.ts"></script>
+  </body>
+</html>

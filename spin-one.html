@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin-1 Visualizer</title>
+    <link rel="stylesheet" href="/src/shared/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a href="index.html">&larr; All spins</a>
+      <h1>Spin-1 state</h1>
+      <button id="toggle-all" type="button">Collapse all</button>
+    </header>
+    <div class="layout">
+      <div class="column">
+        <details class="panel" open>
+          <summary>Input state |ψ⟩ = (a, b, c)</summary>
+          <label>a (m = +1) <input id="amp-a" value="1" spellcheck="false" autocomplete="off" /></label>
+          <div class="error" id="err-a"></div>
+          <label>b (m = 0) <input id="amp-b" value="0" spellcheck="false" autocomplete="off" /></label>
+          <div class="error" id="err-b"></div>
+          <label>c (m = −1) <input id="amp-c" value="0" spellcheck="false" autocomplete="off" /></label>
+          <div class="error" id="err-c"></div>
+          <p class="hint">Amplitudes of the S<sub>z</sub> eigenstates. Examples: <code>1</code>, <code>i/√2</code>, <code>sqrt(2)</code>.</p>
+          <div class="presets" id="presets"></div>
+        </details>
+
+        <details class="panel" open>
+          <summary>Normalized state</summary>
+          <div id="norm-out" class="readout"></div>
+        </details>
+
+        <details class="panel" open>
+          <summary>Expectation values and uncertainties</summary>
+          <table class="readout" id="exp-table">
+            <thead><tr><th>Operator</th><th>⟨S⟩ (ħ)</th><th>ΔS (ħ)</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="readout" id="exp-len"></div>
+          <p class="hint">Unlike spin-½, |⟨S⟩| can be anything from 0 to 1 — the arrow alone does not determine the state.</p>
+        </details>
+      </div>
+
+      <details class="panel" open>
+        <summary>Measurement axis</summary>
+        <div class="presets" id="axis-presets"></div>
+        <label>θ <input type="range" id="axis-theta" min="0" max="180" step="1" value="0" /><output id="axis-theta-out">0°</output></label>
+        <label>φ <input type="range" id="axis-phi" min="0" max="360" step="1" value="0" /><output id="axis-phi-out">0°</output></label>
+        <div id="prob-bars"></div>
+        <p class="hint">Probabilities of each outcome m when S is measured along the chosen axis (white marker = +n, grey = −n on the sphere).</p>
+      </details>
+
+      <details class="panel bloch" open>
+        <summary>Sphere of measurement directions</summary>
+        <div id="bloch"></div>
+        <div class="presets" id="field-presets"></div>
+        <label class="inline"><input type="checkbox" id="fixed-scale" checked /> Fixed colour scale 0–1 (otherwise scaled to the maximum on the sphere)</label>
+        <label class="inline"><input type="checkbox" id="inflate" /> Inflate surface by value</label>
+        <div class="readout" id="field-scale"></div>
+        <p class="hint">
+          Colour at each direction n = probability of the selected outcome if S were measured along n; Q(n) = P(m = +1) is the Husimi function.
+          Orange dots = Majorana stars (the two directions whose spin-coherent states build the state; they coincide for coherent states).
+          White arrow = ⟨S⟩. Drag to orbit.
+        </p>
+      </details>
+    </div>
+    <script type="module" src="/src/spin-one/main.ts"></script>
+  </body>
+</html>

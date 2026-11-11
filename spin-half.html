@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin-½ Visualizer</title>
+    <link rel="stylesheet" href="/src/shared/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a href="index.html">&larr; All spins</a>
+      <h1>Spin-½ state</h1>
+      <label class="inline units"><input type="checkbox" id="hbar-units" checked /> Report S = (ħ/2)σ in units of ħ</label>
+      <button id="toggle-all" type="button">Collapse all</button>
+    </header>
+    <div class="layout">
+      <div class="column">
+      <details class="panel" open>
+        <summary>Input state |ψ⟩ = (α, β)</summary>
+        <label>α <input id="alpha" value="1" spellcheck="false" autocomplete="off" /></label>
+        <div class="error" id="alpha-err"></div>
+        <label>β <input id="beta" value="i" spellcheck="false" autocomplete="off" /></label>
+        <div class="error" id="beta-err"></div>
+        <p class="hint">Examples: <code>1</code>, <code>0.5-0.5i</code>, <code>i/√2</code>, <code>(1+i)/sqrt(2)</code></p>
+        <div class="presets" id="presets"></div>
+      </details>
+
+      <details class="panel" open>
+        <summary>Normalized state</summary>
+        <div id="norm-out" class="readout"></div>
+      </details>
+
+      <details class="panel" open>
+        <summary>Expectation values</summary>
+        <table class="readout" id="exp-table">
+          <thead><tr><th>Operator</th><th>⟨·⟩</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </details>
+
+      <details class="panel" open>
+        <summary>Uncertainties</summary>
+        <div id="unc-bars"></div>
+        <div class="readout" id="unc-rel"></div>
+        <p class="hint">ΔA = √(⟨A²⟩ − ⟨A⟩²). Bars share one scale; full width is the maximum possible value.</p>
+      </details>
+
+      <details class="panel" open>
+        <summary>Measurement probabilities</summary>
+        <label class="inline"><input type="checkbox" id="meas-show" /> Show surface-area state sphere inside the Bloch sphere</label>
+        <div class="presets" id="meas-axis"></div>
+        <table class="readout" id="meas-table">
+          <thead><tr><th>Axis</th><th>P(+)</th><th>P(−)</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="readout" id="meas-check"></div>
+        <p class="hint">P(±n) = (1 ± ⟨σₙ⟩)/2. For unit state direction s, the state surface is a sphere of radius ½ centered at s/2: |r − s/2| = ½. It touches the origin and reaches the state arrow's tip. A plane through the origin, perpendicular to the chosen measurement axis, divides its curved surface into the coloured ± parts. Each part's surface area ÷ total surface area equals its probability; no flat cut face or interior volume is counted. Mesh ratios approximate the exact areas.</p>
+      </details>
+
+      <details class="panel" open>
+        <summary>Bloch angles</summary>
+        <div id="angles-out" class="readout"></div>
+      </details>
+      </div>
+
+      <details class="panel" open>
+        <summary>Components (Argand diagrams)</summary>
+        <div class="phasors">
+          <figure><canvas id="phasor-alpha" width="220" height="220"></canvas><figcaption>α</figcaption></figure>
+          <figure><canvas id="phasor-beta" width="220" height="220"></canvas><figcaption>β</figcaption></figure>
+        </div>
+        <p class="hint">Click or drag to set the value; the text box updates to match. Dashed = input, solid = normalized. Dotted circle is the unit circle.</p>
+      </details>
+
+      <details class="panel bloch" open>
+        <summary>Bloch sphere</summary>
+        <div id="bloch"></div>
+        <details class="subpanel">
+          <summary>Sphere appearance</summary>
+          <div class="appearance">
+            <label>Wire color <input type="color" id="wire-color" value="#5aa9ff" /></label>
+            <label>Wire opacity <input type="range" id="wire-opacity" min="0" max="1" step="0.01" value="0.06" /><output id="wire-opacity-out">0.06</output></label>
+            <label>Surface color <input type="color" id="fill-color" value="#5aa9ff" /></label>
+            <label>Surface opacity <input type="range" id="fill-opacity" min="0" max="1" step="0.01" value="0.04" /><output id="fill-opacity-out">0.04</output></label>
+            <button type="button" id="appearance-reset">Reset</button>
+          </div>
+        </details>
+        <p class="hint">Arrow = state direction = (⟨σx⟩, ⟨σy⟩, ⟨σz⟩). Faint arrow = same direction, with length ‖ψ‖ of the unnormalized input (hidden when the input is already normalized).</p>
+              </details>
+    </div>
+    <script type="module" src="/src/spin-half/main.ts"></script>
+  </body>
+</html>

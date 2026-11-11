@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unordered pairs: torus to Möbius strip</title>
+    <link rel="stylesheet" href="/src/shared/style.css" />
+    <style>
+      .mobius-page { max-width: 1500px; margin: auto; padding: 1rem; }
+      .mobius-grid { display: grid; grid-template-columns: minmax(280px, 0.8fr) 1fr 1fr; gap: 1rem; align-items: start; }
+      .mobius-grid h2 { color: var(--text); text-transform: none; font-size: 1.05rem; }
+      .view3d { width: 100%; aspect-ratio: 1; }
+      .view3d canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+      #pair-circle { display: block; width: 100%; height: auto; aspect-ratio: 1; cursor: grab; touch-action: none; }
+      .mobius-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0; }
+      .mobius-controls button {
+        background: #0e1117; color: var(--text); border: 1px solid var(--border); border-radius: 4px;
+        padding: 0.25rem 0.6rem; cursor: pointer; font: inherit;
+      }
+      .mobius-controls button:hover { border-color: var(--accent); }
+      #cut { flex: 1; min-width: 0; }
+      @media (max-width: 1100px) { .mobius-grid { grid-template-columns: 1fr; max-width: 620px; margin: auto; } }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>Unordered pairs on a circle: torus → Möbius strip</h1>
+      <a href="index.html">All pages</a>
+    </header>
+    <main class="mobius-page">
+      <div class="mobius-grid">
+        <section class="panel">
+          <h2>1. Two points on a circle</h2>
+          <canvas id="pair-circle" width="420" height="420" role="img"
+            aria-label="Circle with two draggable points, the chord joining them, and a measurement cut."></canvas>
+          <p class="hint">Drag either point. The chord joining them is the same chord whichever point you call 1 or 2.</p>
+          <div class="mobius-controls">
+            <button id="swap" type="button">Swap labels 1 ↔ 2</button>
+            <button id="coincide" type="button">Make points coincide</button>
+          </div>
+          <label>Cut direction n <input id="cut" type="range" min="0" max="359" step="1" value="90" /> <span id="cut-out" class="readout"></span></label>
+          <p class="hint">Colored arcs: positive and negative sides of the dashed cut.
+            Both points positive → ++; both negative → −−; one of each → mixed (gray).</p>
+          <p id="pair-readout" class="readout"></p>
+        </section>
+        <section class="panel">
+          <h2>2. Ordered pairs: torus</h2>
+          <div id="torus-view" class="view3d"></div>
+          <p class="hint">Going around the hole moves point 1; going around the tube moves point 2.
+            The white curve is the diagonal, where both points coincide.</p>
+          <p class="hint">A pair and its swap are two separate markers, mirror images across the diagonal.
+            Press <em>Swap</em>: the markers trade places.
+            There are <strong>two</strong> gray regions: +− and −+.</p>
+        </section>
+        <section class="panel">
+          <h2>3. Unordered pairs: Möbius strip</h2>
+          <div id="mobius-view" class="view3d"></div>
+          <p class="hint">Glue each torus point to its mirror image across the diagonal.
+            What remains is a Möbius strip. Press <em>Swap</em>: the white marker does not move.</p>
+          <p class="hint">The white curve is the strip's single edge: coincident pairs, the former diagonal.
+            The two torus gray regions become <strong>one</strong> mixed region, leaving three regions for three outcomes.</p>
+        </section>
+      </div>
+      <section class="panel" style="margin-top: 1rem">
+        <h2>How the strip coordinates work</h2>
+        <p>For points at angles α and β, the chord joining them has normal direction (α + β)/2 and signed distance cos((β − α)/2) from the center.
+          Neither changes when α and β are swapped, so these two numbers label the unordered pair.
+          Going once around the circle reverses the chord's signed distance: that reversal is the strip's half-twist.</p>
+        <p class="hint">Spin-1 analogue: replace the circle by a sphere. Unordered pairs of points on a sphere form a smooth, closed four-dimensional space with no edge (ℂP²), which is the space of pure spin-1 states.
+          The circle version is the lower-dimensional picture of the same gluing.</p>
+        <p class="hint">Drag the 3D views to orbit; scroll or pinch to zoom.</p>
+      </section>
+    </main>
+    <script type="module" src="/src/mobius-pairs/main.ts"></script>
+  </body>
+</html>

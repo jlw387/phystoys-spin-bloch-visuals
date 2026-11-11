@@ -1,0 +1,17 @@
+/node_modules/
+/dist/
+/coverage/
+*.tsbuildinfo
+
+# Local environment values; keep example files shareable.
+.env
+.env.*
+!.env.example
+
+npm-debug.log*
+
+# Python plotting caches and virtual environments.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
